@@ -11,6 +11,14 @@ using System.Reflection;
 
 namespace GalleryShare
 {
+	enum OutputFunction
+	{
+		None,
+		SpecialFile,
+		DirectoryListing,
+		SendFile
+	}
+
 	class GalleryServer 
 	{
 		int port;
@@ -60,80 +68,44 @@ namespace GalleryShare
 		/// <param name="cycle">The Http request to handle.</param>
 		private async Task Handle(HttpListenerContext cycle)
 		{
-			if(cycle.Request.RawUrl == @"/!Transform-DirListing.xslt")
+			OutputFunction outFunction = OutputFunction.None;
+
+			if (cycle.Request.RawUrl.StartsWith("/!"))
+				outFunction = OutputFunction.SpecialFile;
+
+			string requestedPath = GetFullReqestedPath(cycle.Request.RawUrl);
+			if (Directory.Exists(requestedPath))
+				outFunction = OutputFunction.DirectoryListing;
+			if (File.Exists(requestedPath))
+				outFunction = OutputFunction.SendFile;
+			
+			switch(outFunction)
 			{
-				/*string[] resNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-				foreach (string resName in resNames)
-					Console.WriteLine(resName);*/
-				cycle.Response.ContentType = "text/xsl";
-				byte[] xsltData = await Utilities.GetEmbeddedResourceContent(@"GalleryShare.XSLT.DirectoryListing.xslt");
-				await cycle.Response.OutputStream.WriteAsync(xsltData, 0, xsltData.Length);
-
-				logCycle(cycle);
-				cycle.Response.Close();
-				return;
-			}
-			string requestedPath = Path.GetFullPath(Path.Combine(servingDirectory, "." + cycle.Request.RawUrl));
-
-			if (!File.Exists(requestedPath) && !Directory.Exists(requestedPath))
-			{
-				await sendMessage(cycle, 404, "Error: File or directory '{0}' not found.", requestedPath);
-				logCycle(cycle);
-				return;
-			}
-
-			FileAttributes reqPathAttrs = File.GetAttributes(requestedPath);
-
-			StreamWriter responseData = new StreamWriter(cycle.Response.OutputStream);
-
-			if(reqPathAttrs.HasFlag(FileAttributes.Directory))
-			{
-				List<string> dirFiles = new List<string>(Directory.GetFiles(requestedPath));
-				List<string> dirDirectories = new List<string>(Directory.GetDirectories(requestedPath));
-
-				cycle.Response.ContentType = "text/xml";
+				case OutputFunction.SpecialFile:
+					await sendSpecialFile(cycle);
+					break;
 				
-				await responseData.FlushAsync();
-				XmlWriterSettings writerSettings = new XmlWriterSettings();
-				writerSettings.Async = true;
-				XmlWriter xmlData = XmlWriter.Create(cycle.Response.OutputStream, writerSettings);
-
-				await xmlData.WriteStartDocumentAsync();
-				await xmlData.WriteProcessingInstructionAsync("xsl-stylesheet", "type=\"text/xsl\" href=\"/!Transform-DirListing.xslt\"");
-				await xmlData.WriteStartElementAsync(null, "DirectoryListing", null);
-
-				foreach (string directoryname in dirDirectories)
-				{
-					await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
-					await xmlData.WriteAttributeStringAsync(null, "Type", null, "Directory");
-
-					await xmlData.WriteElementStringAsync(null, "Name", null, directoryname);
-
-					// TODO: Write out the number of items in directory
-					// TODO: Write out thumbnail url
-
-					await xmlData.WriteEndElementAsync();
-				}
-				foreach (string filename in dirFiles)
-				{
-					await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
-					await xmlData.WriteAttributeStringAsync(null, "Type", null, "File");
-
-					await xmlData.WriteElementStringAsync(null, "Name", null, filename);
-
-					// TODO: Write out thumbnail url
-
-					await xmlData.WriteEndElementAsync();
-				}
-
-				await xmlData.WriteEndDocumentAsync();
-				await xmlData.FlushAsync();
+				case OutputFunction.DirectoryListing:
+					cycle.Response.ContentType = "text/xml";
+					await sendDirectoryListing(cycle.Response.OutputStream, cycle.Request.RawUrl, requestedPath);
+					break;
+				
+				case OutputFunction.SendFile:
+					
+					break;
+				
+				default:
+					await sendMessage(cycle, 404, "Error: File or directory '{0}' not found.", requestedPath);
+					break;
 			}
 
 			logCycle(cycle);
-			
-			responseData.Close();
 			cycle.Response.Close();
+		}
+
+		private string GetFullReqestedPath(string rawUrl)
+		{
+			return Path.GetFullPath(Path.Combine(servingDirectory, "." + rawUrl));
 		}
 
 		private async Task sendMessage(HttpListenerContext cycle, int statusCode, string message, params object[] paramObjects)
@@ -142,8 +114,8 @@ namespace GalleryShare
 
 			cycle.Response.StatusCode = statusCode;
 			await responseData.WriteLineAsync(string.Format(message, paramObjects));
-			responseData.Close();
-			cycle.Response.Close();
+			/*responseData.Close();
+			cycle.Response.Close();*/
 		}
 
 		private void logCycle(HttpListenerContext cycle)
@@ -155,6 +127,75 @@ namespace GalleryShare
 				cycle.Request.HttpMethod,
 				cycle.Request.RawUrl
 			);
+		}
+
+		private async Task sendDirectoryListing(Stream outgoingData, string rawUrl, string requestedPath)
+		{
+			List<string> dirFiles = new List<string>(Directory.GetFiles(requestedPath));
+			List<string> dirDirectories = new List<string>(Directory.GetDirectories(requestedPath));
+
+			XmlWriterSettings writerSettings = new XmlWriterSettings();
+			writerSettings.Async = true;
+			XmlWriter xmlData = XmlWriter.Create(outgoingData, writerSettings);
+
+			await xmlData.WriteStartDocumentAsync();
+			await xmlData.WriteProcessingInstructionAsync("xsl-stylesheet", "type=\"text/xsl\" href=\"/!Transform-DirListing.xslt\"");
+			await xmlData.WriteStartElementAsync(null, "DirectoryListing", null);
+			await xmlData.WriteElementStringAsync(null, "CurrentDirectory", null, rawUrl);
+			await xmlData.WriteStartElementAsync(null, "Contents", null);
+
+			foreach (string directoryname in dirDirectories)
+			{
+				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
+				await xmlData.WriteAttributeStringAsync(null, "Type", null, "Directory");
+
+				await xmlData.WriteElementStringAsync(null, "Name", null, directoryname);
+
+				// TODO: Write out the number of items in directory
+				// TODO: Write out thumbnail url
+
+				await xmlData.WriteEndElementAsync();
+			}
+			foreach (string filename in dirFiles)
+			{
+				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
+				await xmlData.WriteAttributeStringAsync(null, "Type", null, "File");
+
+				await xmlData.WriteElementStringAsync(null, "Name", null, filename);
+
+				// TODO: Write out thumbnail url
+
+				await xmlData.WriteEndElementAsync();
+			}
+
+			await xmlData.WriteEndDocumentAsync();
+			await xmlData.FlushAsync();
+		}
+
+		private async Task sendSpecialFile(HttpListenerContext cycle)
+		{
+			string specialFileName = cycle.Request.RawUrl.Substring(2);
+			string outputFileName = string.Empty;
+
+			switch(specialFileName)
+			{
+				case "Transform-DirListing.xslt":
+					outputFileName = @"GalleryShare.XSLT.DirectoryListing.xslt";
+					break;
+			}
+
+			if (outputFileName == string.Empty)
+			{
+				await sendMessage(cycle, 404, "Error: Unknown special file '{0}' requested.", specialFileName);
+				return;
+			}
+
+			/*string[] resNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+			foreach (string resName in resNames)
+				Console.WriteLine(resName);*/
+			cycle.Response.ContentType = "text/xsl";
+			byte[] xsltData = await Utilities.GetEmbeddedResourceContent(outputFileName);
+			await cycle.Response.OutputStream.WriteAsync(xsltData, 0, xsltData.Length);
 		}
 	}
 }
