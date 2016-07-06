@@ -13,17 +13,19 @@ namespace GalleryShare
 {
 	class GalleryServer 
 	{
-		HttpListener server = new HttpListener();
-		string prefix;
 		int port;
-
 		string servingDirectory = Environment.CurrentDirectory;
 
-		public int Port { get { return port; } }
+		HttpListener server = new HttpListener();
+		string prefix;
 
-		public GalleryServer(int inPort)
+		public int Port { get { return port; } }
+		public string ServingDirectory { get { return servingDirectory; } }
+
+		public GalleryServer(string inServingDirectory, int inPort)
 		{
 			port = inPort;
+			servingDirectory = inServingDirectory;
 
 			prefix = string.Format("http://*:{0}/", Port);
 			server.Prefixes.Add(prefix);
