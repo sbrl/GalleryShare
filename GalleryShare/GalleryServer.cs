@@ -136,6 +136,8 @@ namespace GalleryShare
 
 			XmlWriterSettings writerSettings = new XmlWriterSettings();
 			writerSettings.Async = true;
+			writerSettings.Indent = true;
+			writerSettings.IndentChars = "\t";
 			XmlWriter xmlData = XmlWriter.Create(outgoingData, writerSettings);
 
 			await xmlData.WriteStartDocumentAsync();
