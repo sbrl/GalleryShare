@@ -65,8 +65,11 @@ namespace GalleryShare
 					Console.WriteLine(resName);*/
 				cycle.Response.ContentType = "text/xsl";
 				byte[] xsltData = await Utilities.GetEmbeddedResourceContent(@"GalleryShare.XSLT.DirectoryListing.xslt");
-				cycle.Response.OutputStream.WriteAsync(xsltData, 0, xsltData.Length);
+				await cycle.Response.OutputStream.WriteAsync(xsltData, 0, xsltData.Length);
+
+				logCycle(cycle);
 				cycle.Response.Close();
+				return;
 			}
 			string requestedPath = Path.GetFullPath(Path.Combine(servingDirectory, "." + cycle.Request.RawUrl));
 
@@ -125,10 +128,10 @@ namespace GalleryShare
 				await xmlData.FlushAsync();
 			}
 
+			logCycle(cycle);
+			
 			responseData.Close();
 			cycle.Response.Close();
-
-			logCycle(cycle);
 		}
 
 		private async Task sendMessage(HttpListenerContext cycle, int statusCode, string message, params object[] paramObjects)
