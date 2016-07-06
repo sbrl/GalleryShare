@@ -86,7 +86,7 @@ namespace GalleryShare
 					break;
 				
 				case OutputFunction.DirectoryListing:
-					cycle.Response.ContentType = "text/xml";
+					cycle.Response.ContentType = "application/xml";
 					await sendDirectoryListing(cycle.Response.OutputStream, cycle.Request.RawUrl, requestedPath);
 					break;
 				
@@ -139,7 +139,7 @@ namespace GalleryShare
 			XmlWriter xmlData = XmlWriter.Create(outgoingData, writerSettings);
 
 			await xmlData.WriteStartDocumentAsync();
-			await xmlData.WriteProcessingInstructionAsync("xsl-stylesheet", "type=\"text/xsl\" href=\"/!Transform-DirListing.xslt\"");
+			await xmlData.WriteProcessingInstructionAsync("xml-stylesheet", "type=\"text/xsl\" href=\"/!Transform-DirListing.xslt\"");
 			await xmlData.WriteStartElementAsync(null, "DirectoryListing", null);
 			await xmlData.WriteElementStringAsync(null, "CurrentDirectory", null, rawUrl);
 			await xmlData.WriteStartElementAsync(null, "Contents", null);
