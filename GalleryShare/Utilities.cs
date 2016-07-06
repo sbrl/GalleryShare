@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Reflection;
+using System.IO;
+using System.Net.Mime;
 
 namespace GalleryShare
 {
@@ -30,6 +33,18 @@ namespace GalleryShare
 				if (!acceptableExceptions.Contains(ex.GetType()))
 					throw;
 			}
+		}
+
+		public static async Task<byte[]> GetEmbeddedResourceContent(string resourceName)
+		{
+			Assembly asm = Assembly.GetExecutingAssembly();
+			Stream stream = asm.GetManifestResourceStream(resourceName);
+			MemoryStream ms = new MemoryStream();
+			await stream.CopyToAsync(ms);
+			byte[] embeddedContent = ms.ToArray();
+			ms.Dispose();
+			stream.Dispose();
+			return embeddedContent;
 		}
 	}
 }
