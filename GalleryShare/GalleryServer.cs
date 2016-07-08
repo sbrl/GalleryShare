@@ -35,6 +35,10 @@ namespace GalleryShare
 			port = inPort;
 			servingDirectory = inServingDirectory;
 
+			string homeDir = Environment.GetEnvironmentVariable("HOME");
+			if (homeDir != null)
+				servingDirectory = servingDirectory.Replace("~", homeDir);
+
 			prefix = string.Format("http://*:{0}/", Port);
 			server.Prefixes.Add(prefix);
 		}
@@ -54,7 +58,7 @@ namespace GalleryShare
 		{
 			server.Start();
 			Console.WriteLine("Listening for requests on {0}.", prefix);
-			Console.WriteLine("Browser url: http://localhost:{0}/", Port);
+			Console.WriteLine("Serving from {0}. Browser url: http://localhost:{1}/", servingDirectory, Port);
 
 			while (true)
 			{
@@ -146,14 +150,14 @@ namespace GalleryShare
 			await xmlData.WriteElementStringAsync(null, "CurrentDirectory", null, rawUrl);
 			await xmlData.WriteStartElementAsync(null, "Contents", null);
 
-			foreach (string directoryname in dirDirectories)
+			foreach (string directoryName in dirDirectories)
 			{
 				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
 				await xmlData.WriteAttributeStringAsync(null, "Type", null, "Directory");
 
-				await xmlData.WriteElementStringAsync(null, "Name", null, directoryname);
+				await xmlData.WriteElementStringAsync(null, "Name", null, directoryName.Substring(servingDirectory.Length));
+				await xmlData.WriteElementStringAsync(null, "ItemCount", null, Directory.GetFileSystemEntries(directoryName).Length.ToString());
 
-				// TODO: Write out the number of items in directory
 				// TODO: Write out thumbnail url
 
 				await xmlData.WriteEndElementAsync();
@@ -163,9 +167,7 @@ namespace GalleryShare
 				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
 				await xmlData.WriteAttributeStringAsync(null, "Type", null, "File");
 
-				await xmlData.WriteElementStringAsync(null, "Name", null, filename);
-
-				// TODO: Write out thumbnail url
+				await xmlData.WriteElementStringAsync(null, "Name", null, filename.Substring(servingDirectory.Length));
 
 				await xmlData.WriteEndElementAsync();
 			}
