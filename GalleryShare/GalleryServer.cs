@@ -184,7 +184,7 @@ namespace GalleryShare
 			switch(specialFileName)
 			{
 				case "Transform-DirListing.xslt":
-					outputFileName = @"GalleryShare.XSLT.DirectoryListing.xslt";
+					outputFileName = @"GalleryShare.Embed.DirectoryListing.xslt";
 					break;
 			}
 
