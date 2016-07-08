@@ -201,6 +201,11 @@ namespace GalleryShare
 			byte[] xsltData = await Utilities.GetEmbeddedResourceContent(outputFileName);
 			await cycle.Response.OutputStream.WriteAsync(xsltData, 0, xsltData.Length);
 		}
+
+		private async Task sendFile(string requestedPath)
+		{
+			
+		}
 	}
 }
 
