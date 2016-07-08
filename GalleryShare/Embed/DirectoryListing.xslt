@@ -14,13 +14,7 @@
 					<xsl:apply-templates select="//ListingEntry" />
 				</main>
 				
-				<style>
-					html, body { font-size: 100%; }
-					body
-					{
-						font-family: sans-serif;
-					}
-				</style>
+				<link rel="stylesheet" href="/!Theme.css" />
 			</body>
 		</html>
 	</xsl:template>
