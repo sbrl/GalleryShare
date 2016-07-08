@@ -9,6 +9,8 @@ using System.Threading;
 using System.Xml;
 using System.Reflection;
 
+using ImageMagick;
+
 namespace GalleryShare
 {
 	enum OutputFunction
@@ -21,8 +23,12 @@ namespace GalleryShare
 
 	class GalleryServer 
 	{
+		static MimeSharp.Mime mimeDB = new MimeSharp.Mime();
+
 		int port;
 		string servingDirectory = Environment.CurrentDirectory;
+		int thumbnailWidth = 300;
+		int thumbnailHeight = 200;
 
 		HttpListener server = new HttpListener();
 		string prefix;
@@ -100,7 +106,7 @@ namespace GalleryShare
 					break;
 				
 				case OutputFunction.SendFile:
-					await sendFile(requestedPath);
+					await sendFile(cycle, requestedPath);
 					break;
 				
 				default:
@@ -216,9 +222,26 @@ namespace GalleryShare
 			await cycle.Response.OutputStream.WriteAsync(xsltData, 0, xsltData.Length);
 		}
 
-		private async Task sendFile(string requestedPath)
+		private async Task sendFile(HttpListenerContext cycle, string requestedPath)
 		{
-			Console.WriteLine("File requested: {0}", requestedPath);
+			if(cycle.Request.QueryString["type"] == "thumbnail")
+			{
+				// Send a thumbnail!
+				MagickImage img = new MagickImage(requestedPath);
+				img.Thumbnail(new MagickGeometry(thumbnailWidth, thumbnailHeight));
+				cycle.Response.ContentType = "image/webp";
+				img.Write(cycle.Response.OutputStream, MagickFormat.WebP);
+				img.Dispose();
+				return;
+			}
+
+			// Send the raw file
+
+			cycle.Response.ContentType = mimeDB.Lookup(requestedPath);
+
+			Stream fileData = File.OpenRead(requestedPath);
+			await fileData.CopyToAsync(cycle.Response.OutputStream);
+
 		}
 	}
 }
