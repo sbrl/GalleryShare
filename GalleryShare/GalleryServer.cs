@@ -27,6 +27,11 @@ namespace GalleryShare
 		HttpListener server = new HttpListener();
 		string prefix;
 
+		Dictionary<string, string> pathReplacements = new Dictionary<string, string>()
+		{
+			{ "%20", " " }
+		};
+
 		public int Port { get { return port; } }
 		public string ServingDirectory { get { return servingDirectory; } }
 
@@ -95,7 +100,7 @@ namespace GalleryShare
 					break;
 				
 				case OutputFunction.SendFile:
-					
+					await sendFile(requestedPath);
 					break;
 				
 				default:
@@ -109,7 +114,12 @@ namespace GalleryShare
 
 		private string GetFullReqestedPath(string rawUrl)
 		{
-			return Path.GetFullPath(Path.Combine(servingDirectory, "." + rawUrl));
+			string result = Path.GetFullPath(Path.Combine(servingDirectory, "." + rawUrl));
+			if(result.IndexOf("?") != -1)
+				result = result.Substring(0, result.IndexOf("?"));
+			foreach (KeyValuePair<string, string> replacePair in pathReplacements)
+				result = result.Replace(replacePair.Key, replacePair.Value);
+			return result;
 		}
 
 		private async Task sendMessage(HttpListenerContext cycle, int statusCode, string message, params object[] paramObjects)
@@ -184,7 +194,12 @@ namespace GalleryShare
 			switch(specialFileName)
 			{
 				case "Transform-DirListing.xslt":
+					cycle.Response.ContentType = "text/xsl";
 					outputFileName = @"GalleryShare.Embed.DirectoryListing.xslt";
+					break;
+				case "Theme.css":
+					cycle.Response.ContentType = "text/css";
+					outputFileName = @"GalleryShare.Embed.Theme.css";
 					break;
 			}
 
@@ -197,14 +212,13 @@ namespace GalleryShare
 			/*string[] resNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
 			foreach (string resName in resNames)
 				Console.WriteLine(resName);*/
-			cycle.Response.ContentType = "text/xsl";
 			byte[] xsltData = await Utilities.GetEmbeddedResourceContent(outputFileName);
 			await cycle.Response.OutputStream.WriteAsync(xsltData, 0, xsltData.Length);
 		}
 
 		private async Task sendFile(string requestedPath)
 		{
-			
+			Console.WriteLine("File requested: {0}", requestedPath);
 		}
 	}
 }
