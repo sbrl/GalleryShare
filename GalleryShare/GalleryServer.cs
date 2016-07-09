@@ -9,7 +9,7 @@ using System.Threading;
 using System.Xml;
 using System.Reflection;
 
-using ImageMagick;
+using System.Drawing;
 
 namespace GalleryShare
 {
@@ -27,8 +27,7 @@ namespace GalleryShare
 
 		int port;
 		string servingDirectory = Environment.CurrentDirectory;
-		int thumbnailWidth = 300;
-		int thumbnailHeight = 200;
+		Size thumbnailSize = new Size(300, 200);
 
 		HttpListener server = new HttpListener();
 		string prefix;
@@ -227,11 +226,9 @@ namespace GalleryShare
 			if(cycle.Request.QueryString["type"] == "thumbnail")
 			{
 				// Send a thumbnail!
-				MagickImage img = new MagickImage(requestedPath);
-				img.Thumbnail(new MagickGeometry(thumbnailWidth, thumbnailHeight));
-				cycle.Response.ContentType = "image/webp";
-				img.Write(cycle.Response.OutputStream, MagickFormat.WebP);
-				img.Dispose();
+				Console.WriteLine("Sending thumbnail for '{0}'", requestedPath);
+				cycle.Response.ContentType = "image/png";
+				ThumbnailGenerator.GenerateThumbnailPng(requestedPath, thumbnailSize, cycle.Response.OutputStream);
 				return;
 			}
 
@@ -241,7 +238,6 @@ namespace GalleryShare
 
 			Stream fileData = File.OpenRead(requestedPath);
 			await fileData.CopyToAsync(cycle.Response.OutputStream);
-
 		}
 	}
 }
