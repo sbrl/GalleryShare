@@ -12,27 +12,33 @@ namespace GalleryShare
 	{
 		public static void GenerateThumbnailPng(string imagePath, Size thumbnailBounds, Stream outputStream)
 		{
-			using (Bitmap rawImage = new Bitmap(imagePath)) {
-				float scaleFactor = Math.Min(
-					thumbnailBounds.Width / (float)rawImage.Width,
-					thumbnailBounds.Height / (float)rawImage.Height
-				);
-				Size thumbnailSize = new Size(
-					(int)(rawImage.Width * scaleFactor),
-					(int)(rawImage.Height * scaleFactor)
-				);
-
-				using (Bitmap smallImage = new Bitmap(thumbnailSize.Width, thumbnailSize.Height))
-				using (Graphics context = Graphics.FromImage(smallImage)) {
-					context.CompositingMode = CompositingMode.SourceCopy;
-					context.InterpolationMode = InterpolationMode.HighQualityBicubic;
-					context.DrawImage(rawImage, new Rectangle(
-						Point.Empty,
-						thumbnailSize
-					));
-
-					smallImage.Save(outputStream, ImageFormat.Png);
+			try {
+				using (Bitmap rawImage = new Bitmap(imagePath)) {
+					float scaleFactor = Math.Min(
+						thumbnailBounds.Width / (float)rawImage.Width,
+						thumbnailBounds.Height / (float)rawImage.Height
+					);
+					Size thumbnailSize = new Size(
+						(int)(rawImage.Width * scaleFactor),
+						(int)(rawImage.Height * scaleFactor)
+					);
+					
+					using (Bitmap smallImage = new Bitmap(thumbnailSize.Width, thumbnailSize.Height))
+					using (Graphics context = Graphics.FromImage(smallImage)) {
+						context.CompositingMode = CompositingMode.SourceCopy;
+						context.InterpolationMode = InterpolationMode.HighQualityBicubic;
+						context.DrawImage(rawImage, new Rectangle(
+							Point.Empty,
+							thumbnailSize
+						));
+						
+						smallImage.Save(outputStream, ImageFormat.Png);
+					}
 				}
+			}
+			catch (Exception error)
+			{
+				throw new NotImplementedException("Error images haven't been implemented yet.", error);
 			}
 		}
 	}
