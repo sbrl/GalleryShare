@@ -170,7 +170,7 @@ namespace GalleryShare
 				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
 				await xmlData.WriteAttributeStringAsync(null, "Type", null, "Directory");
 
-				await xmlData.WriteElementStringAsync(null, "Name", null, directoryName.Substring(servingDirectory.Length));
+				await xmlData.WriteElementStringAsync(null, "Name", null, "/" + directoryName.Substring(servingDirectory.Length));
 				await xmlData.WriteElementStringAsync(null, "ItemCount", null, Directory.GetFileSystemEntries(directoryName).Length.ToString());
 
 				// TODO: Write out thumbnail url
@@ -182,7 +182,7 @@ namespace GalleryShare
 				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
 				await xmlData.WriteAttributeStringAsync(null, "Type", null, "File");
 
-				await xmlData.WriteElementStringAsync(null, "Name", null, filename.Substring(servingDirectory.Length));
+				await xmlData.WriteElementStringAsync(null, "Name", null, "/" + filename.Substring(servingDirectory.Length));
 
 				await xmlData.WriteEndElementAsync();
 			}
