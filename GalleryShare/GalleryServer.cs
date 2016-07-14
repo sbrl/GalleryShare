@@ -227,8 +227,7 @@ namespace GalleryShare
 			{
 				// Send a thumbnail!
 				Console.WriteLine("Sending thumbnail for '{0}'", requestedPath);
-				cycle.Response.ContentType = "image/png";
-				ThumbnailGenerator.GenerateThumbnailPng(requestedPath, thumbnailSize, cycle.Response.OutputStream);
+				await ThumbnailGenerator.SendThumbnailPng(requestedPath, thumbnailSize, cycle);
 				return;
 			}
 
