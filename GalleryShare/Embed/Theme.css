@@ -3,3 +3,10 @@ body
 {
     font-family: sans-serif;
 }
+
+figure
+{
+	width: 10em; height: 7.5em;
+	background-position: center center;
+	background-size: cover;
+}

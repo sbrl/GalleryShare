@@ -20,13 +20,12 @@
 	</xsl:template>
 	
 	<xsl:template match="ListingEntry[@Type='File']">
-		<figure class='preview file'>
-			<img src="{Name}?type=thumbnail" />
+		<figure class="preview file" style="background-image: url('{Name}?type=thumbnail');">
 			<figcaption><xsl:value-of select="Name" /></figcaption>
 		</figure>
 	</xsl:template>
 	<xsl:template match="ListingEntry[@Type='Directory']">
-		<figure class='preview directory'>
+		<figure class="preview directory">
 			(coming soon)
 			<figcaption><xsl:value-of select="Name" /></figcaption>
 		</figure>
