@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Net.Mime;
+using System.Net;
 
 namespace GalleryShare
 {
@@ -45,6 +46,17 @@ namespace GalleryShare
 			ms.Dispose();
 			stream.Dispose();
 			return embeddedContent;
+		}
+
+
+		public static async Task SendMessage(HttpListenerContext cycle, int statusCode, string message, params object[] paramObjects)
+		{
+			StreamWriter responseData = new StreamWriter(cycle.Response.OutputStream);
+
+			cycle.Response.StatusCode = statusCode;
+			await responseData.WriteLineAsync(string.Format(message, paramObjects));
+			/*responseData.Close();
+			cycle.Response.Close();*/
 		}
 	}
 }

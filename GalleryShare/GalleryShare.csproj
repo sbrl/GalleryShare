@@ -44,11 +44,19 @@
     <Compile Include="GalleryServer.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="ThumbnailGenerator.cs" />
+    <Compile Include="RequestRouter\IRequestRoute.cs" />
+    <Compile Include="RequestRouter\MasterHttpRouter.cs" />
+    <Compile Include="RequestRouter\HttpRequestRouteAttribute.cs" />
+    <Compile Include="RequestRouter\RouteSendFile.cs" />
+    <Compile Include="RequestRouter\RouteSpecialFile.cs" />
+    <Compile Include="RequestRouter\RouteDirectoryListing.cs" />
+    <Compile Include="RequestRouter\RouteDefault.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Magick.NET-Q8-x64.7.0.2.100\build\net40-client\Magick.NET-Q8-x64.targets" Condition="Exists('packages\Magick.NET-Q8-x64.7.0.2.100\build\net40-client\Magick.NET-Q8-x64.targets')" />
   <ItemGroup>
     <Folder Include="Embed\" />
+    <Folder Include="RequestRouter\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Embed\**" />
