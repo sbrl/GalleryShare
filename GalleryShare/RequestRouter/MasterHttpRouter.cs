@@ -13,7 +13,7 @@ namespace GalleryShare.RequestRouter
 
 	public class MasterHttpRouter
 	{
-		public bool DebugMode = true;
+		public bool DebugMode = false;
 
 		List<IRequestRoute> requestRoutes = new List<IRequestRoute>();
 		UrlPathTransformer urlTransformer;

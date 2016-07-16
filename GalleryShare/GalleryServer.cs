@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Xml;
 using System.Reflection;
@@ -78,10 +77,24 @@ namespace GalleryShare
 		/// <param name="cycle">The Http request to handle.</param>
 		private async Task Handle(HttpListenerContext cycle)
 		{
-			await router.RouteRequest(cycle);
-
-			logCycle(cycle);
-			cycle.Response.Close();
+			try
+			{
+				await router.RouteRequest(cycle);
+				logCycle(cycle);
+			}
+			catch(Exception error)
+			{
+				Console.WriteLine("[{0}] [{1}] [Error] {2} ({3})",
+					DateTime.Now.ToString("hh:m tt"),
+					cycle.Request.RemoteEndPoint,
+					cycle.Request.RawUrl,
+					error.Message
+				);
+			}
+			finally
+			{
+				cycle.Response.Close();
+			}
 		}
 
 		private string GetFullReqestedPath(string rawUrl)
