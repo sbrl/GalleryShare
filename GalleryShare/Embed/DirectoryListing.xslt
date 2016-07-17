@@ -6,18 +6,19 @@
 		<html>
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<title><xsl:value-of select="/DirectoryListing/CurrentDirectory" /> - GalleryShare</title>
+				<title><xsl:value-of select="/DirectoryListing/CurrentDirectory" /> <xsl:text disable-output-escaping="yes"><![CDATA[ &#x95; ]]></xsl:text> GalleryShare</title>
 			</head>
 			<body>
-				<h1><xsl:value-of select="/DirectoryListing/CurrentDirectory" /> - GalleryShare</h1>
+				<h1><xsl:value-of select="/DirectoryListing/CurrentDirectory" /></h1>
 				
 				<main>
 					<xsl:apply-templates select="//ListingEntry" />
 				</main>
 				
-				<!-- <footer>
+				<footer>
 					Built by Starbeamrainbowlabs
-				</footer> -->
+					<img src="/!images/Badge-License.svg" />
+				</footer>
 				
 				<link rel="stylesheet" href="/!Theme.css" />
 			</body>

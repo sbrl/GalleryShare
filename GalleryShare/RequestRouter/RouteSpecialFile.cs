@@ -17,7 +17,9 @@ namespace GalleryShare.RequestRouter
 		{
 			{ "Transform-DirListing.xslt", new SpecialFileEntry(@"GalleryShare.Embed.DirectoryListing.xslt", "text/xsl") },
 			{ "Theme.css", new SpecialFileEntry(@"GalleryShare.Embed.Theme.css", "text/css") },
-			{ "Background-Texture.png", new SpecialFileEntry(@"GalleryShare.Embed.Background-Texture.png", "image/png") }
+			{ "images/Background-Texture.png", new SpecialFileEntry(@"GalleryShare.Embed.Background-Texture.png", "image/png") },
+			{ "images/Background-Caption.png", new SpecialFileEntry(@"GalleryShare.Embed.Background-Caption.png", "image/png") },
+			{ "images/Badge-License.svg", new SpecialFileEntry(@"GalleryShare.Embed.Badge-License.svg", "image/svg+xml") }
 		};
 
 		public RouteSpecialFile()

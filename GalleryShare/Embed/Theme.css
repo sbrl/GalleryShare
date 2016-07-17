@@ -5,7 +5,7 @@
     --transparent-checkerboard-size: 2.5em;
     --checkerboard-bg: rgba(200, 200, 200, 0.2);
     --figcaption-bg-size: 13em;
-    --figcaption-bg-position-y: 0.9em;
+    --figcaption-bg-position-y: 0.7em;
 }
 
 html, body { font-size: 100%; }
@@ -15,7 +15,7 @@ body
     
 	font-family: sans-serif;
 	
-	background: url('/!Background-Texture.png'),
+	background: url('/!images/Background-Texture.png'),
         /* Adapted from http://www.webcore-it.com/colorful-background */
 		linear-gradient(45deg, hsla(30, 92%, 46%, 1) 0%, hsla(30, 92%, 46%, 0) 70%),
 		linear-gradient(135deg, hsla(330, 96%, 50%, 1) 10%, hsla(330, 96%, 50%, 0) 80%),
@@ -40,7 +40,7 @@ main
 	text-align: center;
     line-height: 0.8em;
     
-    background: rgba(75, 75, 75, 0.4);
+    /*background: rgba(75, 75, 75, 0.4);*/
     /*background: rgba(125, 125, 125, 0.4);*/
 }
 
@@ -77,19 +77,30 @@ figcaption
     
 	text-align: center;
     line-height: 1em;
+    color: rgba(255, 255, 255, 0.3);
     
-    color: white;
-    background: 
-        url('https://www.transparenttextures.com/patterns/lined-paper-2.png') 0 var(--figcaption-bg-position-y),
-        rgba(10, 10, 10, 0.2);
+    background-image: url('/!images/Background-Caption.png');
+    background-color: rgba(10, 10, 10, 0.2);
     background-size: var(--figcaption-bg-size) var(--figcaption-bg-size);
+    background-position: 0 var(--figcaption-bg-position-y);
     
     transition: all 0.25s;
 }
 figure:hover figcaption
 {
-    background:
-        url('https://www.transparenttextures.com/patterns/lined-paper-2.png') 0 var(--figcaption-bg-position-y),
-        rgb(25, 25, 25);
-    background-size: var(--figcaption-bg-size) var(--figcaption-bg-size);
+    color: white;
+    background-color: rgb(25, 25, 25);
+}
+
+footer
+{
+    padding: 1em;
+    
+    text-align: center;
+    color: white;
+}
+
+footer img
+{
+    vertical-align: middle;
 }
