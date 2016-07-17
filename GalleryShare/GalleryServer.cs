@@ -77,6 +77,7 @@ namespace GalleryShare
 		/// <param name="cycle">The Http request to handle.</param>
 		private async Task Handle(HttpListenerContext cycle)
 		{
+			IPEndPoint remoteEndpoint = cycle.Request.RemoteEndPoint;
 			try
 			{
 				await router.RouteRequest(cycle);
@@ -86,7 +87,7 @@ namespace GalleryShare
 			{
 				Console.WriteLine("[{0}] [{1}] [Error] {2} ({3})",
 					DateTime.Now.ToString("hh:m tt"),
-					cycle.Request.RemoteEndPoint,
+					remoteEndpoint,
 					cycle.Request.RawUrl,
 					error.Message
 				);
