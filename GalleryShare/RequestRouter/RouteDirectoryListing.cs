@@ -57,8 +57,6 @@ namespace GalleryShare.RequestRouter
 				await xmlData.WriteElementStringAsync(null, "Name", null, "/" + directoryName.Substring(parentServer.ServingDirectory.Length));
 				await xmlData.WriteElementStringAsync(null, "ItemCount", null, Directory.GetFileSystemEntries(directoryName).Length.ToString());
 
-				// TODO: Write out thumbnail url
-
 				await xmlData.WriteEndElementAsync();
 			}
 			foreach (string filename in dirFiles)

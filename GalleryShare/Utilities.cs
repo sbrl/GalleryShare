@@ -30,7 +30,7 @@ namespace GalleryShare
 			}
 			catch (Exception ex)
 			{
-				// TODO: consider whether derived types are also acceptable.
+				// FUTURE: consider whether derived types are also acceptable.
 				if (!acceptableExceptions.Contains(ex.GetType()))
 					throw;
 			}
