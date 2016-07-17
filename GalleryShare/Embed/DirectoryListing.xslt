@@ -21,14 +21,18 @@
 	</xsl:template>
 	
 	<xsl:template match="ListingEntry[@Type='File']">
-		<figure class="preview file" style="background-image: url('{Name}?type=thumbnail');">
-			<figcaption><xsl:value-of select="Name" /></figcaption>
-		</figure>
+		<span class="preview-backdrop">
+			<figure class="preview file" style="background-image: url('{Name}?type=thumbnail');">
+				<figcaption><xsl:value-of select="Name" /></figcaption>
+			</figure>
+		</span>
 	</xsl:template>
 	<xsl:template match="ListingEntry[@Type='Directory']">
-		<figure class="preview directory">
-			(coming soon)
-			<figcaption><xsl:value-of select="Name" /></figcaption>
-		</figure>
+		<span class="preview-backdrop">
+			<figure class="preview directory">
+				(coming soon)
+				<figcaption><xsl:value-of select="Name" /></figcaption>
+			</figure>
+		</span>
 	</xsl:template>
 </xsl:stylesheet>
