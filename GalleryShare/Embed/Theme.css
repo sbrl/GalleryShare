@@ -3,7 +3,7 @@ body
 {
 	font-family: sans-serif;
 	
-	background:
+	background: url('/!Background-Texture.png'),
 		linear-gradient(45deg, hsla(30, 92%, 46%, 1) 0%, hsla(30, 92%, 46%, 0) 70%),
 		linear-gradient(135deg, hsla(330, 96%, 50%, 1) 10%, hsla(330, 96%, 50%, 0) 80%),
 		linear-gradient(225deg, hsla(30, 96%, 45%, 1) 10%, hsla(30, 96%, 45%, 0) 80%),

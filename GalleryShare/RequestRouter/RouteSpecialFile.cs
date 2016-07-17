@@ -16,7 +16,8 @@ namespace GalleryShare.RequestRouter
 		Dictionary<string, SpecialFileEntry> specialFileMap = new Dictionary<string, SpecialFileEntry>()
 		{
 			{ "Transform-DirListing.xslt", new SpecialFileEntry(@"GalleryShare.Embed.DirectoryListing.xslt", "text/xsl") },
-			{ "Theme.css", new SpecialFileEntry(@"GalleryShare.Embed.Theme.css", "text/css") }
+			{ "Theme.css", new SpecialFileEntry(@"GalleryShare.Embed.Theme.css", "text/css") },
+			{ "Background-Texture.png", new SpecialFileEntry(@"GalleryShare.Embed.Background-Texture.png", "image/png") }
 		};
 
 		public RouteSpecialFile()
