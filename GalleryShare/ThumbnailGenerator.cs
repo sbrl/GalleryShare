@@ -48,7 +48,7 @@ namespace GalleryShare
 					error.Message
 				);
 
-				using (Font drawingFont = new Font("Sans-serif", 18f, FontStyle.Regular, GraphicsUnit.Pixel))
+				using (Font drawingFont = new Font("Sans-serif", 12f, FontStyle.Regular, GraphicsUnit.Pixel))
 				{
 					imageToSend = GenerateErrorImage(error.Message, drawingFont, Color.DarkGray, Color.Transparent);
 				}
@@ -73,12 +73,20 @@ namespace GalleryShare
 				textSize = measuringContext.MeasureString(errorText, textFont);
 			}
 
-			Image resultImage = new Bitmap((int)textSize.Width, (int)textSize.Height);
+			float questionMarkFontSize = 200;
+			Image resultImage = new Bitmap((int)textSize.Width, (int)textSize.Height + (int)questionMarkFontSize + (int)textFont.Size * 2);
 			using (Graphics resultContext = Graphics.FromImage(resultImage))
 			using (SolidBrush drawingBrush = new SolidBrush(foregroundColour))
+			using (Font largeFont = new Font(textFont.FontFamily, questionMarkFontSize + 10, FontStyle.Regular, GraphicsUnit.Pixel))
 			{
 				resultContext.Clear(backgroundColour);
-				resultContext.DrawString(errorText, textFont, drawingBrush, 0f, 0f);
+				resultContext.DrawString(errorText, textFont, drawingBrush, 0f, resultImage.Height - textFont.Size * 2);
+				SizeF questionMarkSize = resultContext.MeasureString("?", largeFont);
+				resultContext.DrawString(
+					"?", largeFont, drawingBrush,
+					(textSize.Width / 2) - (questionMarkSize.Width / 2),
+					-10f
+				);
 			}
 			return resultImage;
 		}
