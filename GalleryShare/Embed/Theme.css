@@ -11,6 +11,8 @@
 html, body { font-size: 100%; }
 body
 {
+    margin: 0;
+    
 	font-family: sans-serif;
 	
 	background: url('/!Background-Texture.png'),
@@ -23,15 +25,23 @@ body
 
 h1
 {
+    margin: 0; padding: 1em;
+    
     text-align: center;
     font-weight: lighter;
     color: white;
+    
+    background: rgba(75, 75, 75, 0.4);
 }
 
 main
 {
+    width: 100%;
 	text-align: center;
     line-height: 0.8em;
+    
+    background: rgba(75, 75, 75, 0.4);
+    /*background: rgba(125, 125, 125, 0.4);*/
 }
 
 .preview-backdrop

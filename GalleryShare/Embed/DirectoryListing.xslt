@@ -15,6 +15,10 @@
 					<xsl:apply-templates select="//ListingEntry" />
 				</main>
 				
+				<!-- <footer>
+					Built by Starbeamrainbowlabs
+				</footer> -->
+				
 				<link rel="stylesheet" href="/!Theme.css" />
 			</body>
 		</html>
