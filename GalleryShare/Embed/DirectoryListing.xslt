@@ -5,6 +5,7 @@
 		<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
 		<html>
 			<head>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<title><xsl:value-of select="/DirectoryListing/CurrentDirectory" /> - GalleryShare</title>
 			</head>
 			<body>
