@@ -26,18 +26,18 @@
 	</xsl:template>
 	
 	<xsl:template match="ListingEntry[@Type='File']">
-		<span class="preview-backdrop">
+		<a href="{Name}" class="preview-backdrop">
 			<figure class="preview file" style="background-image: url('{Name}?type=thumbnail');">
 				<figcaption><xsl:value-of select="Name" /></figcaption>
 			</figure>
-		</span>
+		</a>
 	</xsl:template>
 	<xsl:template match="ListingEntry[@Type='Directory']">
-		<span class="preview-backdrop">
+		<a href="{Name}" class="preview-backdrop">
 			<figure class="preview directory">
 				(coming soon)
 				<figcaption><xsl:value-of select="Name" /></figcaption>
 			</figure>
-		</span>
+		</a>
 	</xsl:template>
 </xsl:stylesheet>
