@@ -61,7 +61,22 @@ namespace GalleryShare
 			router.UrlTransformer = GetFullReqestedPath;
 			Console.WriteLine("done.");
 
-			server.Start();
+			try
+			{
+				server.Start();
+			}
+			catch(HttpListenerException error)
+			{
+				if (error.Message.Contains("denied") && Environment.OSVersion.Platform == PlatformID.Win32NT && !Utilities.IsAdministrator())
+				{
+					Console.Error.WriteLine("Error starting HttpListener: {0}", error.Message);
+					Console.Error.WriteLine("You are using Windows and have attempted to bind to a non-localhost address, and aren't running GalleryShare as an administrator.");
+					Console.Error.WriteLine("Please restart GalleryShare with administrative privileges in order to bind to this address.");
+					Console.Error.WriteLine("Please see http://stackoverflow.com/questions/4019466/httplistener-access-denied for more information.");
+					return;
+				}
+				throw;
+			}
 			Console.WriteLine("Listening for requests on {0}.", prefix);
 			Console.WriteLine("Serving from {0}. Browser url: http://localhost:{1}/", servingDirectory, Port);
 

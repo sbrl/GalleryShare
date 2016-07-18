@@ -5,6 +5,7 @@ using System.Reflection;
 using System.IO;
 using System.Net.Mime;
 using System.Net;
+using System.Security.Principal;
 
 namespace GalleryShare
 {
@@ -57,6 +58,13 @@ namespace GalleryShare
 			await responseData.WriteLineAsync(string.Format(message, paramObjects));
 			/*responseData.Close();
 			cycle.Response.Close();*/
+		}
+
+		public static bool IsAdministrator()
+		{
+			var identity = WindowsIdentity.GetCurrent();
+			var principal = new WindowsPrincipal(identity);
+			return principal.IsInRole(WindowsBuiltInRole.Administrator);
 		}
 	}
 }
