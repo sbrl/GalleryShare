@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 namespace GalleryShare
 {
@@ -38,7 +39,22 @@ namespace GalleryShare
 			}
 
 			GalleryServer gserver = new GalleryServer(directory, port);
-			gserver.StartSync();
+			try
+			{
+				gserver.StartSync();
+			}
+			catch(AggregateException agError)
+			{
+				agError.Handle((error) => {
+					ExceptionDispatchInfo.Capture(error).Throw();
+					throw error;
+				});
+			}
+			catch
+			{
+				Console.Error.WriteLine("Something went very wrong O.o");
+				throw;
+			}
 
 			return 255;
 		}
