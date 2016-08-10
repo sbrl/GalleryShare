@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Net;
+using System.Reflection;
 
 namespace GalleryShare
 {
@@ -14,7 +15,19 @@ namespace GalleryShare
 	{
 		public static async Task SendThumbnailPng(string imagePath, Size thumbnailBounds, HttpListenerContext cycle)
 		{
-			Image imageToSend;
+			Image imageToSend = GenerateFileThumbnail(imagePath, thumbnailBounds);
+			byte[] imageData = GetImageBytesPng(imageToSend);
+
+			cycle.Response.ContentType = "image/png";
+			cycle.Response.ContentLength64 = imageData.LongLength;
+
+			await cycle.Response.OutputStream.WriteAsync(imageData, 0, imageData.Length);
+
+			imageToSend.Dispose();
+		}
+
+		public static Image GenerateFileThumbnail(string imagePath, Size thumbnailBounds)
+		{
 			try {
 				using (Bitmap rawImage = new Bitmap(imagePath)) {
 					float scaleFactor = Math.Min(
@@ -25,7 +38,7 @@ namespace GalleryShare
 						(int)(rawImage.Width * scaleFactor),
 						(int)(rawImage.Height * scaleFactor)
 					);
-					
+
 					Bitmap smallImage = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
 					using (Graphics context = Graphics.FromImage(smallImage)) {
 						context.CompositingMode = CompositingMode.SourceCopy;
@@ -34,9 +47,9 @@ namespace GalleryShare
 							Point.Empty,
 							thumbnailSize
 						));
-						
+
 						//smallImage.Save(outputStream, ImageFormat.Png);
-						imageToSend = smallImage;
+						return smallImage;
 					}
 				}
 			}
@@ -50,18 +63,9 @@ namespace GalleryShare
 
 				using (Font drawingFont = new Font("Sans-serif", 12f, FontStyle.Regular, GraphicsUnit.Pixel))
 				{
-					imageToSend = GenerateErrorImage(error.Message, drawingFont, Color.DarkGray, Color.Transparent);
+					return GenerateErrorImage(error.Message, drawingFont, Color.DarkGray, Color.Transparent);
 				}
 			}
-
-			byte[] imageData = GetImageBytesPng(imageToSend);
-
-			cycle.Response.ContentType = "image/png";
-			cycle.Response.ContentLength64 = imageData.LongLength;
-
-			await cycle.Response.OutputStream.WriteAsync(imageData, 0, imageData.Length);
-
-			imageToSend.Dispose();
 		}
 
 		public static Image GenerateErrorImage(string errorText, Font textFont, Color foregroundColour, Color backgroundColour)
