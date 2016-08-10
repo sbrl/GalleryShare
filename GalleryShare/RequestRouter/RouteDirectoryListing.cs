@@ -55,7 +55,7 @@ namespace GalleryShare.RequestRouter
 				await xmlData.WriteAttributeStringAsync(null, "Type", null, "Directory");
 
 				await xmlData.WriteElementStringAsync(null, "Name", null, escapePath("/" + directoryName.Substring(parentServer.ServingDirectory.Length)));
-				await xmlData.WriteElementStringAsync(null, "DisplayName", null, directoryName.Substring(parentServer.ServingDirectory.Length));
+				await xmlData.WriteElementStringAsync(null, "DisplayName", null, "/" + directoryName.Substring(parentServer.ServingDirectory.Length));
 				await xmlData.WriteElementStringAsync(null, "ItemCount", null, Directory.GetFileSystemEntries(directoryName).Length.ToString());
 
 				await xmlData.WriteEndElementAsync();
