@@ -5,9 +5,8 @@ using System.IO;
 
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using System.Net;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace GalleryShare
 {
@@ -24,6 +23,30 @@ namespace GalleryShare
 			await cycle.Response.OutputStream.WriteAsync(imageData, 0, imageData.Length);
 
 			imageToSend.Dispose();
+		}
+
+		public static Image GenerateDirectoryThumbnail(string dirPath, Size thumbnailSize)
+		{
+			List<string> dirFiles = new List<string>(Directory.GetFiles(dirPath));
+			dirFiles.Sort( (a, b) => File.GetLastWriteTime(a).CompareTo(File.GetLastWriteTime(b)) );
+
+			Bitmap resultImage = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
+			using(Graphics context = Graphics.FromImage(resultImage))
+			{
+				for(int i = 0; i < 4; i++)
+				{
+					using (Image fileThumbnail = GenerateFileThumbnail(
+						dirFiles[i],
+						new Size(thumbnailSize.Width, thumbnailSize.Height)
+					))
+					{
+						PointF drawingPos = getDirectoryImageDrawPosition(i).Multiply(new PointF(resultImage.Width, resultImage.Height));
+						context.DrawImage(fileThumbnail, drawingPos.ToIntPoint());
+					}
+				}
+			}
+
+			return resultImage;
 		}
 
 		public static Image GenerateFileThumbnail(string imagePath, Size thumbnailBounds)
@@ -101,6 +124,18 @@ namespace GalleryShare
 			{
 				sourceImage.Save(mStream, ImageFormat.Png);
 				return mStream.ToArray();
+			}
+		}
+
+		private static PointF getDirectoryImageDrawPosition(int id)
+		{
+			switch(id)
+			{
+				case 0: return new PointF(0, 0);
+				case 1: return new PointF(0.5f, 0);
+				case 2: return new PointF(0.5f, 0.5f);
+				case 3: return new PointF(0, 0.5f);
+				default: throw new InvalidDataException($"Invalid id #{id}.");
 			}
 		}
 	}

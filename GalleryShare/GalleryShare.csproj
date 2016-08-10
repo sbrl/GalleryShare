@@ -51,6 +51,7 @@
     <Compile Include="RequestRouter\RouteSpecialFile.cs" />
     <Compile Include="RequestRouter\RouteDirectoryListing.cs" />
     <Compile Include="RequestRouter\RouteDefault.cs" />
+    <Compile Include="Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
