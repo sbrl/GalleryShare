@@ -24,7 +24,7 @@ namespace GalleryShare
 
 		Dictionary<string, string> pathReplacements = new Dictionary<string, string>()
 		{
-			{ "%20", " " }
+			["%20"] = " "
 		};
 
 		public int Port { get { return port; } }
@@ -118,6 +118,7 @@ namespace GalleryShare
 			string result = Path.GetFullPath(Path.Combine(servingDirectory, "." + rawUrl));
 			if(result.IndexOf("?") != -1)
 				result = result.Substring(0, result.IndexOf("?"));
+			result = Uri.UnescapeDataString(result);
 			foreach (KeyValuePair<string, string> replacePair in pathReplacements)
 				result = result.Replace(replacePair.Key, replacePair.Value);
 			return result;
