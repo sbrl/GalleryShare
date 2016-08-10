@@ -4,6 +4,7 @@ using System.Xml;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace GalleryShare.RequestRouter
 {
@@ -13,6 +14,8 @@ namespace GalleryShare.RequestRouter
 		GalleryServer parentServer;
 
 		public int Priority { get; } = 5;
+
+		public Size thumbnailSize { get; private set; } = new Size(300, 200);
 
 		public RouteDirectoryListing()
 		{
@@ -32,6 +35,12 @@ namespace GalleryShare.RequestRouter
 
 		public async Task HandleRequestAsync(HttpListenerContext cycle, string requestedPath)
 		{
+			if (cycle.Request.QueryString["type"] == "thumbnail")
+			{
+				await ThumbnailGenerator.SendThumbnailPng(requestedPath, thumbnailSize, cycle);
+				return;
+			}
+			
 			cycle.Response.ContentType = "application/xml";
 
 			List<string> dirFiles = new List<string>(Directory.GetFiles(requestedPath));

@@ -14,7 +14,13 @@ namespace GalleryShare
 	{
 		public static async Task SendThumbnailPng(string imagePath, Size thumbnailBounds, HttpListenerContext cycle)
 		{
-			Image imageToSend = GenerateFileThumbnail(imagePath, thumbnailBounds);
+			bool dummy;
+			Image imageToSend;
+			if (Directory.Exists(imagePath))
+				imageToSend = GenerateDirectoryThumbnail(imagePath, thumbnailBounds);
+			else
+				imageToSend = GenerateFileThumbnail(imagePath, thumbnailBounds, out dummy); // Has error image generation built in
+			
 			byte[] imageData = GetImageBytesPng(imageToSend);
 
 			cycle.Response.ContentType = "image/png";
@@ -33,14 +39,24 @@ namespace GalleryShare
 			Bitmap resultImage = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
 			using(Graphics context = Graphics.FromImage(resultImage))
 			{
-				for(int i = 0; i < 4; i++)
+				bool isErrorImage;
+				int filesSkipped = 0;
+				for(int i = 0; i < 4 + filesSkipped; i++)
 				{
 					using (Image fileThumbnail = GenerateFileThumbnail(
 						dirFiles[i],
-						new Size(thumbnailSize.Width, thumbnailSize.Height)
+						new Size(thumbnailSize.Width / 2, thumbnailSize.Height / 2),
+						out isErrorImage
 					))
 					{
-						PointF drawingPos = getDirectoryImageDrawPosition(i).Multiply(new PointF(resultImage.Width, resultImage.Height));
+						// If an error image has been generated, then we don't really want to
+						// include it in the preview
+						if(isErrorImage)
+						{
+							filesSkipped++;
+							continue;
+						}
+						PointF drawingPos = getDirectoryImageDrawPosition(i - filesSkipped).Multiply(new PointF(resultImage.Width, resultImage.Height));
 						context.DrawImage(fileThumbnail, drawingPos.ToIntPoint());
 					}
 				}
@@ -49,8 +65,9 @@ namespace GalleryShare
 			return resultImage;
 		}
 
-		public static Image GenerateFileThumbnail(string imagePath, Size thumbnailBounds)
+		public static Image GenerateFileThumbnail(string imagePath, Size thumbnailBounds, out bool errorImage)
 		{
+			errorImage = false;
 			try {
 				using (Bitmap rawImage = new Bitmap(imagePath)) {
 					float scaleFactor = Math.Min(
@@ -78,6 +95,7 @@ namespace GalleryShare
 			}
 			catch (Exception error)
 			{
+				errorImage = true;
 				Console.WriteLine("[{0}] Error generating thumbnail {1}: {2}",
 					DateTime.Now.ToShortTimeString(),
 					imagePath,
