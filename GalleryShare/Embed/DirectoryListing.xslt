@@ -34,8 +34,7 @@
 	</xsl:template>
 	<xsl:template match="ListingEntry[@Type='Directory']">
 		<a href="{Name}" class="preview-backdrop">
-			<figure class="preview directory">
-				(coming soon)
+			<figure class="preview directory" style="background-image: url('{Name}?type=thumbnail');">
 				<figcaption><xsl:value-of select="DisplayName" /></figcaption>
 			</figure>
 		</a>
