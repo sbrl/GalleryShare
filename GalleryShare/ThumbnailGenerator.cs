@@ -57,6 +57,10 @@ namespace GalleryShare
 							continue;
 						}
 						PointF drawingPos = getDirectoryImageDrawPosition(i - filesSkipped).Multiply(new PointF(resultImage.Width, resultImage.Height));
+						drawingPos = drawingPos.Add(new PointF(
+							thumbnailSize.Width / 4f - fileThumbnail.Width / 2f,
+							thumbnailSize.Height / 4f - fileThumbnail.Height / 2f
+						));
 						context.DrawImage(fileThumbnail, drawingPos.ToIntPoint());
 					}
 				}

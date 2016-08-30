@@ -13,6 +13,14 @@ namespace GalleryShare
 			);
 		}
 
+		public static PointF Add(this PointF a, PointF b)
+		{
+			return new PointF(
+				a.X + b.X,
+				a.Y + b.Y
+			);
+		}
+
 		public static Point ToIntPoint(this PointF source)
 		{
 			return new Point((int)source.X, (int)source.Y);
