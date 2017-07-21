@@ -19,7 +19,8 @@
 				</main>
 				
 				<footer>
-					Built by Starbeamrainbowlabs
+					Powered by <a href="https://github.com/sbrl/GalleryShare">GalleryShare</a> &#x2022;
+					Built by Starbeamrainbowlabs &#x2022;
 					<img src="/!images/Badge-License.svg" />
 				</footer>
 				
@@ -35,6 +36,7 @@
 			</figure>
 		</a>
 	</xsl:template>
+	
 	<xsl:template match="ListingEntry[@Type='Directory']">
 		<a href="{Name}" class="preview-backdrop">
 			<figure class="preview directory" style="background-image: url('{Name}?type=thumbnail');">
