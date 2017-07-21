@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output method="html" encoding="utf-8" indent="yes" />
+
+	<xsl:output method="html" doctype-system="about:legacy-compat" />
+	
 	<xsl:template match="/">
-		<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
 		<html>
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<title><xsl:value-of select="/DirectoryListing/CurrentDirectory" /> <xsl:text disable-output-escaping="yes"><![CDATA[ &#x95; ]]></xsl:text> GalleryShare</title>
+				<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+				<title><xsl:value-of select="/DirectoryListing/CurrentDirectory" /> &#x2022; GalleryShare</title>
 			</head>
 			<body>
 				<h1><xsl:value-of select="/DirectoryListing/CurrentDirectory" /></h1>
