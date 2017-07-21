@@ -1,5 +1,5 @@
-# GalleryShare
-A simple program to share a directory of pictures recursively. Inspired by netham91/Quick-Share.
+# :framed_picture: ::wave: GalleryShare
+A simple program to share a directory of pictures and / or recursively. Inspired by [netham91/Quick-Share](https://github.com/netham91/Quick-Share).
 
 ## :package: Getting Started
 To get started, head over to the [releases](https://github.com/sbrl/GalleryShare/releases/) page and download the latest release.
