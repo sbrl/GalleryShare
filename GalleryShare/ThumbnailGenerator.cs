@@ -34,7 +34,7 @@ namespace GalleryShare
 		public static Image GenerateDirectoryThumbnail(string dirPath, Size thumbnailSize)
 		{
 			List<string> dirFiles = new List<string>(Directory.GetFiles(dirPath));
-			dirFiles.Sort( (a, b) => File.GetLastWriteTime(a).CompareTo(File.GetLastWriteTime(b)) );
+			dirFiles.Sort( (a, b) => File.GetLastWriteTime(b).CompareTo(File.GetLastWriteTime(a)) );
 
 			Bitmap resultImage = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
 			using(Graphics context = Graphics.FromImage(resultImage))
