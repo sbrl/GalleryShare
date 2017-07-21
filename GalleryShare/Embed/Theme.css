@@ -8,7 +8,7 @@
     --figcaption-bg-position-y: 0.7em;
 }
 
-html, body { font-size: 100%; }
+html, body { min-height: 100%; font-size: 100%; }
 body
 {
     margin: 0;
