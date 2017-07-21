@@ -56,7 +56,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Embed\**" />
+    <EmbeddedResource Include="Embed\*" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
