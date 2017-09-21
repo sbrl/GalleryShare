@@ -63,8 +63,9 @@ namespace GalleryShare.RequestRouter
 				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
 				await xmlData.WriteAttributeStringAsync(null, "Type", null, "Directory");
 
-				await xmlData.WriteElementStringAsync(null, "Name", null, escapePath("/" + directoryName.Substring(parentServer.ServingDirectory.Length)));
-				await xmlData.WriteElementStringAsync(null, "DisplayName", null, "/" + directoryName.Substring(parentServer.ServingDirectory.Length));
+				string relativePath = directoryName.Substring(parentServer.ServingDirectory.Length);
+				await xmlData.WriteElementStringAsync(null, "Name", null, escapePath("/" + relativePath.TrimStart("/".ToCharArray())));
+				await xmlData.WriteElementStringAsync(null, "DisplayName", null, relativePath.Substring(relativePath.LastIndexOf("/") + 1).TrimStart("/".ToCharArray()));
 				await xmlData.WriteElementStringAsync(null, "ItemCount", null, Directory.GetFileSystemEntries(directoryName).Length.ToString());
 
 				await xmlData.WriteEndElementAsync();
@@ -74,8 +75,9 @@ namespace GalleryShare.RequestRouter
 				await xmlData.WriteStartElementAsync(null, "ListingEntry", null);
 				await xmlData.WriteAttributeStringAsync(null, "Type", null, "File");
 
-				await xmlData.WriteElementStringAsync(null, "Name", null, escapePath("/" + filename.Substring(parentServer.ServingDirectory.Length)));
-				await xmlData.WriteElementStringAsync(null, "DisplayName", null, "/" + filename.Substring(parentServer.ServingDirectory.Length));
+				string relativePath = filename.Substring(parentServer.ServingDirectory.Length);
+				await xmlData.WriteElementStringAsync(null, "Name", null, escapePath("/" + relativePath.TrimStart("/".ToCharArray())));
+				await xmlData.WriteElementStringAsync(null, "DisplayName", null, relativePath.Substring(relativePath.LastIndexOf("/") + 1).TrimStart("/".ToCharArray()));
 
 				await xmlData.WriteEndElementAsync();
 			}
