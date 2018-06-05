@@ -1,4 +1,9 @@
 # :framed_picture: :wave: GalleryShare
+
+# Project has moved to GitLab: https://gitlab.com/sbrl/GalleryShare
+
+-------------------
+
 A simple program to share a directory of pictures and / or recursively. Inspired by [netham91/Quick-Share](https://github.com/netham91/Quick-Share).
 
 ## :package: Getting Started
